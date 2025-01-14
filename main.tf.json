@@ -1,0 +1,58 @@
+{
+    "data": {
+        "aws_iam_policy_document": {
+            "aws_access": [
+                {
+                    "statement": [
+                        {
+                            "actions": [
+                                "*"
+                            ],
+                            "condition": [
+                                {
+                                    "test": "NotIpAddress",
+                                    "values": "${local.ip_list}",
+                                    "variable": "aws:SourceIp"
+                                },
+                                {
+                                    "test": "Bool",
+                                    "values": [
+                                        "false"
+                                    ],
+                                    "variable": "aws:ViaAWSService"
+                                }
+                            ],
+                            "effect": "Deny",
+                            "resources": [
+                                "*"
+                            ]
+                        }
+                    ],
+                    "version": "2012-10-17"
+                }
+            ]
+        }
+    },
+    "locals": [
+        {
+            "ip_list": [
+                "4.4.4.4/32",
+                "3.3.3.3/32",
+                "1.1.1.1/32",
+                "2.2.2.2/32"
+            ]
+        }
+    ],
+    "resource": {
+        "aws_iam_policy": {
+            "aws_access": [
+                {
+                    "description": "AWS access limited on AWS api key",
+                    "name": "test_Access",
+                    "path": "/",
+                    "policy": "${data.aws_iam_policy_document.aws_access.json}"
+                }
+            ]
+        }
+    }
+}
